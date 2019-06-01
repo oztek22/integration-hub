@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600');
+/* font-family: 'Poppins', sans-serif; */
+/* font-weight: 400 / 500 / 600; */
+/*         Regular / Medium / Semi-Bold */
+
+/* cyrillic */
+@font-face {
+  font-family: 'Avenir Roman';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Avenir Roman'), local('Avenir-Roman'),
+    url('../avenir-roman.ttf') format('truetype');
+}
+
+/* cyrillic */
+@font-face {
+  font-family: 'Avenir Book';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Avenir Book'), local('Avenir-Book'),
+    url('../avenir-book.ttf') format('truetype');
+}
+
+/* cyrillic */
+@font-face {
+  font-family: 'Avenir Medium';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Avenir Medium'), local('Avenir-Medium'),
+    url('../avenir-medium.ttf') format('truetype');
+}
+
+/* cyrillic */
+@font-face {
+  font-family: 'Avenir Heavy';
+  font-style: normal;
+  font-weight: 900;
+  src: local('Avenir Heavy'), local('Avenir-Heavy'),
+    url('../avenir-heavy.ttf') format('truetype');
+}

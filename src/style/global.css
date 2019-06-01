@@ -1,0 +1,29 @@
+.font-avenir-book {
+  font-family: 'Avenir Book', sans-serif;
+  font-weight: 400;
+}
+
+.font-avenir-roman {
+  font-family: 'Avenir Roman', sans-serif;
+  font-weight: 400;
+}
+
+.font-avenir-med {
+  font-family: 'Avenir Medium', sans-serif;
+  font-weight: 500;
+}
+
+.font-avenir-heavy {
+  font-family: 'Avenir Heavy', sans-serif;
+  font-weight: 900;
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+}
+
+.font-poppins-medium {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
