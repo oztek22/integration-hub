@@ -15,6 +15,7 @@ import Login from 'views/login';
 import ConnectionList from 'views/connections/listing';
 import Jobs from 'views/jobs';
 import MappingProfile from 'views/Mapping/Listing';
+import newMapping from 'views/new-mapping';
 
 const routes = () => {
   return (
@@ -43,6 +44,11 @@ const routes = () => {
               name="Mapping Profile"
               path="/mapping-profile"
               component={MappingProfile}
+            />
+            <CustomRoute
+              name="New Mapping"
+              path="/new-mapping"
+              component={newMapping}
             />
             <Redirect path="/" to="/connections" exact={true} />
           </Switch>
