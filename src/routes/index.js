@@ -23,6 +23,12 @@ const routes = () => {
       <TopBar />
       <Switch>
         <Route name="Integrartion Hub" path="/login" component={Login} />
+
+        <CustomRoute
+          name="New Mapping"
+          path="/new-mapping"
+          component={newMapping}
+        />
         <MainWrapper>
           <Switch>
             <CustomRoute
@@ -44,11 +50,6 @@ const routes = () => {
               name="Mapping Profile"
               path="/mapping-profile"
               component={MappingProfile}
-            />
-            <CustomRoute
-              name="New Mapping"
-              path="/new-mapping"
-              component={newMapping}
             />
             <Redirect path="/" to="/connections" exact={true} />
           </Switch>
