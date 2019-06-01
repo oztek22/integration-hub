@@ -13,6 +13,7 @@
     "classnames": "^2.2.6",
     "customize-cra": "^0.2.12",
     "emotion-theming": "^10.0.10",
+    "gg-editor": "^2.0.4",
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
     "lodash": "^4.17.11",
