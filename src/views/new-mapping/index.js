@@ -95,7 +95,10 @@ const NewMapping = () => {
           <MappingChart>
             <div className="mapping-label">Design the Mapping profile</div>
 
-            <GGEditor>
+            <GGEditor
+              onAfterCommandExecute={({ command }) => {
+                console.log('command', command);
+              }}>
               <div className="mapping-charts-container">
                 <div className="mapping-chart-content">
                   <div className="mapping-chart-left-part">
