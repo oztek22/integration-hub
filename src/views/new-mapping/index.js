@@ -8,7 +8,7 @@ import DataMasking from '../../assets/images/data-masking.svg';
 import WebService from '../../assets/images/webservices.svg';
 import Union from '../../assets/images/union.svg';
 import Structure from '../../assets/images/structureparser.svg';
-import GGEditor, { Flow } from 'gg-editor';
+import GGEditor, { Flow, ItemPanel, Item } from 'gg-editor';
 import {
   MappingWrapper,
   LargeContainer,
@@ -23,7 +23,7 @@ const chartData = {
     size: '70*70',
     shape: 'flow-circle',
     color: '#FA8C16',
-    label: '起止节点',
+    label: '<div>asad</div>',
     x: 55,
     y: 55,
     id: 'ea1184e8',
@@ -49,12 +49,35 @@ const chartData = {
   }],
 };
 
+const mappingOptions = [
+  {
+    label: 'Aggregator',
+    icon: AggregatorIcon
+  },
+  {
+    label: 'Data Masking',
+    icon: DataMasking
+  },
+  {
+    label: 'Web Service',
+    icon: WebService
+  },
+  {
+    label: 'Union',
+    icon: Union
+  },
+  {
+    label: 'Structure Parser',
+    icon: Structure
+  }
+]
+
 const NewMapping = () => {
   return (
     <MappingWrapper>
       <LargeContainer>
         <InnerMapping>
-          <div class="back-header">
+          <div className="back-header">
             <div className="backAction">
               <div className="arrow-img">
                 <img src={LeftArrow} alt="leftarrow" />
@@ -71,69 +94,54 @@ const NewMapping = () => {
           </div>
           <MappingChart>
             <div className="mapping-label">Design the Mapping profile</div>
-            <div className="mapping-charts-container">
-              <div className="mapping-chart-content">
-                <div className="mapping-chart-left-part">
-                  <div className="chart-tabs-container">
-                    <div className="chart-tabs-top">
-                      <div className="chart-inner-tab">
-                        <ul className="chart-tabs-list">
-                          <li className="chart-tabs-list-item">
-                            <div className="chart-inner-item-content">
-                              <div className="chart-icon">
-                                <img src={AggregatorIcon} alt="datamasking" />
-                              </div>
-                              <div className="chart-text">Aggregator</div>
-                            </div>
-                          </li>
-                          <li className="chart-tabs-list-item">
-                            <div className="chart-inner-item-content">
-                              <div className="chart-icon">
-                                <img src={DataMasking} alt="DataMasking" />
-                              </div>
-                              <div className="chart-text">Data Masking</div>
-                            </div>
-                          </li>
-                          <li className="chart-tabs-list-item">
-                            <div className="chart-inner-item-content">
-                              <div className="chart-icon">
-                                <img src={WebService} alt="WebService" />
-                              </div>
-                              <div className="chart-text">Web Service</div>
-                            </div>
-                          </li>
-                          <li className="chart-tabs-list-item">
-                            <div className="chart-inner-item-content">
-                              <div className="chart-icon">
-                                <img src={Union} alt="union" />
-                              </div>
-                              <div className="chart-text">Union</div>
-                            </div>
-                          </li>
-                          <li className="chart-tabs-list-item">
-                            <div className="chart-inner-item-content">
-                              <div className="chart-icon">
-                                <img src={Structure} alt="structure" />
-                              </div>
-                              <div className="chart-text">Structure Parser</div>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="chat-tabs-bottom">
-                      <div className="bottom-inner">
-                        <div className="bottom-img">
-                          <img src={More} alt="more" />
+
+            <GGEditor>
+              <div className="mapping-charts-container">
+                <div className="mapping-chart-content">
+                  <div className="mapping-chart-left-part">
+                    <div className="chart-tabs-container">
+                      <div className="chart-tabs-top">
+                        <div className="chart-inner-tab">
+                          <ItemPanel>
+                            <ul className="chart-tabs-list">
+                              {mappingOptions.map((value, index) => {
+                                return (
+                                  <Item
+                                    key={index}
+                                    type="node"
+                                    size="80*48"
+                                    shape="flow-rect"
+                                    model={{
+                                      label: value.label,
+                                    }}>
+                                    <li className="chart-tabs-list-item">
+                                      <div className="chart-inner-item-content">
+                                        <div className="chart-icon">
+                                          <img src={value.icon} alt={value.label} />
+                                        </div>
+                                        <div className="chart-text">{value.label}</div>
+                                      </div>
+                                    </li>
+                                  </Item>
+                                )
+                              })}
+                            </ul>
+                          </ItemPanel>
                         </div>
-                        <span>More</span>
+                      </div>
+                      <div className="chat-tabs-bottom">
+                        <div className="bottom-inner">
+                          <div className="bottom-img">
+                            <img src={More} alt="more" />
+                          </div>
+                          <span>More</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="mapping-chart-right-part">
-                  <div className="chart-right-inner">
-                    {/*<div className="chart-right-header">
+                  <div className="mapping-chart-right-part">
+                    <div className="chart-right-inner">
+                      {/*<div className="chart-right-header">
                             <div className="chart-title">
                                 Drag and Drop the transformers from left panel
                             </div>
@@ -141,16 +149,16 @@ const NewMapping = () => {
                                 <ul></ul>
                             </div>
                         </div>*/}
-                    <div className="chart-right-bottom">
+                      <div className="chart-right-bottom">
 
-                      <GGEditor>
-                        <Flow style={{ width: 700, height: 400 }} data={chartData} />
-                      </GGEditor>
+                        <Flow style={{ flex: 1, height: 450 }} data={chartData} />
+
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </GGEditor>
           </MappingChart>
           <AggregatorTabs>
             <div className="mapping-label">Transformer Settings</div>
@@ -184,7 +192,7 @@ const NewMapping = () => {
                       </li>
                     </ul>
                   </div>
-                  <div class="tabs-right-content">
+                  <div className="tabs-right-content">
                     <div className="mapping-input-section">
                       <div className="mapping-label">Name</div>
                       <div className="mapping-input">
