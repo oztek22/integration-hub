@@ -111,6 +111,7 @@ export const MappingChart = styled.div`
     flex: 1 1 auto;
   }
   .chat-tabs-bottom {
+    cursor: pointer;
     padding: 9px 12px;
     border-top: 1px solid ${theme.color.paleLavender};
   }
