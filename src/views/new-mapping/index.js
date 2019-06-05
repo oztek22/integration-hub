@@ -25,7 +25,7 @@ import {
   MappingChart,
 } from './newMappingStyle';
 import { Button } from 'antd';
-
+const axios = require('axios');
 
 const chartData = {
   nodes: [{
@@ -278,7 +278,42 @@ class NewMapping extends React.Component {
     console.log('command', command);
   }
   updateSelectedNode(node) {
-    this.setState({ selectedNode: node });
+    const chartData = this.state.chartData;
+    const previousNode = chartData.nodes.find((e) => e.id === node.id);
+    previousNode.src_col = node.src_col;
+    previousNode.des_col = node.des_col;
+    previousNode.transformation = node.transformation;
+    this.setState({ selectedNode: node, chartData: chartData });
+  }
+  saveMapping() {
+    const mapping = [];
+    this.state.chartData.nodes.forEach((node, index) => {
+      if (node.itemType !== 'src' && node.itemType !== 'dest') {
+        mapping.push({
+          sequence: index - 1,
+          src_col: node.src_col,
+          des_col: node.des_col,
+          transformation: node.transformation
+        })
+      }
+    });
+    const rawData = {
+      'func': 'write',
+      'connObj': {
+        'name': 'map_3',
+        'srcid': '1',
+        'desid': '2',
+        'mappings': mapping
+      }
+    };
+    console.log(rawData);
+    axios.post('https://q4tp0m1cmb.execute-api.us-east-1.amazonaws.com/dev/', rawData)
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
   render() {
     if (!this.state.chartData) {
@@ -380,6 +415,7 @@ class NewMapping extends React.Component {
                                 <li>
                                   <Button
                                     type="primary"
+                                    onClick={() => { this.saveMapping() }}
                                   >
                                     Save
                             </Button>
