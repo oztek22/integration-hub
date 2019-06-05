@@ -8,6 +8,7 @@ export const theme = {
     paleBlue: '#dfe6ee',
     blueyGrey: '#929dae',
     paleLavender: '#eeedf2',
+    heather: '#8f8d96',
     mediumGreen: '#39b54a',
     red: '#f06565',
     lightBlueGrey: '#c6cbd4',

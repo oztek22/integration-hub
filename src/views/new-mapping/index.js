@@ -8,7 +8,10 @@ import DataMasking from '../../assets/images/data-masking.svg';
 import WebService from '../../assets/images/webservices.svg';
 import Union from '../../assets/images/union.svg';
 import Structure from '../../assets/images/structureparser.svg';
-import GGEditor, { Flow, ItemPanel, Item } from 'gg-editor';
+import ZoomIn from '../../assets/images/zoom-in.svg';
+import ZoomOut from '../../assets/images/zoom-out.svg';
+import Delete from '../../assets/images/delete.svg';
+import GGEditor, { Flow, ItemPanel, Item, Command, Toolbar } from 'gg-editor';
 import {
   MappingWrapper,
   LargeContainer,
@@ -16,35 +19,36 @@ import {
   AggregatorTabs,
   MappingChart,
 } from './newMappingStyle';
+import { Button } from 'antd';
 
 const chartData = {
   nodes: [{
     type: 'node',
-    size: '70*70',
-    shape: 'flow-circle',
-    color: '#FA8C16',
+    size: '106*56',
+    shape: 'flow-rect',
+    color: '#eeedf2',
     label: '<div>asad</div>',
     x: 55,
     y: 55,
-    id: 'ea1184e8',
+    id: 'src',
     index: 0,
   }, {
     type: 'node',
-    size: '70*70',
-    shape: 'flow-circle',
-    color: '#FA8C16',
+    size: '106*56',
+    shape: 'flow-rect',
+    color: '#eeedf2',
     label: '结束节点',
     x: 55,
     y: 255,
-    id: '481fbb1a',
+    id: 'dest',
     index: 2,
   }],
   edges: [{
-    source: 'ea1184e8',
+    source: 'src',
     sourceAnchor: 2,
-    target: '481fbb1a',
+    target: 'dest',
     targetAnchor: 0,
-    id: '7989ac70',
+    id: '1',
     index: 1,
   }],
 };
@@ -112,7 +116,7 @@ const NewMapping = () => {
                                   <Item
                                     key={index}
                                     type="node"
-                                    size="80*48"
+                                    size="106*56"
                                     shape="flow-rect"
                                     model={{
                                       label: value.label,
@@ -144,17 +148,30 @@ const NewMapping = () => {
                   </div>
                   <div className="mapping-chart-right-part">
                     <div className="chart-right-inner">
-                      {/*<div className="chart-right-header">
-                            <div className="chart-title">
-                                Drag and Drop the transformers from left panel
+                      <div className="chart-right-header">
+                        <div className="chart-title">
+                          Drag and Drop the transformers from left panel
                             </div>
-                            <div className="icons-list-container">
-                                <ul></ul>
-                            </div>
-                        </div>*/}
+                        <Toolbar>
+                          <div className="icons-list-container">
+                            <ul className="icon-list">
+                              <li><Command name="zoomIn"><div className="icon-item"><img src={ZoomIn} alt="aggregate" /></div></Command></li>
+                              <li><Command name="zoomOut"><div className="icon-item"><img src={ZoomOut} alt="aggregate" /></div></Command></li>
+                              <li><Command name="delete"><div className="icon-item"><img src={Delete} alt="aggregate" /></div></Command></li>
+                              <li>
+                                <Button
+                                  type="primary"
+                                >
+                                  Save
+                            </Button>
+                              </li>
+                            </ul>
+                          </div>
+                        </Toolbar>
+                      </div>
                       <div className="chart-right-bottom">
 
-                        <Flow style={{ flex: 1, height: 450 }} data={chartData} />
+                        <Flow style={{ flex: 1, height: 395 }} data={chartData} />
 
                       </div>
                     </div>

@@ -41,7 +41,7 @@ export const InnerMapping = styled.div`
     }
     
     .mapping-label{
-        fontFamily: 'Poppins,sans-serif',
+        font-family: 'Poppins,sans-serif',
         fontWeight: 500,
         color: #707885;
         font-size:12px;
@@ -168,6 +168,36 @@ export const MappingChart = styled.div`
     padding: 0;
     margin: 0;
     list-style: none;
+  }
+  .chart-right-header {
+    padding: 23px 23px 0;
+    display: flex;
+    align-item: center;
+    justify-content: space-between;
+    .chart-title {
+      color: ${theme.color.heather};
+      font-size: 12px;
+    }
+    .icon-list {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      display: flex;
+      li {
+        padding: 0 8px;
+        .icon-item {
+          cursor: pointer;
+          width: 30px;
+          height: 30px;
+          background-color: ${theme.color.paleGrey};
+          overflow: hidden;
+          display: flex;
+          align-item: center;
+          justify-content: center;
+          border-radius: 100px;
+        }
+      }
+    }
   }
 `;
 
