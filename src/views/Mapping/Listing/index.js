@@ -27,13 +27,13 @@ class MappingModelInit extends React.Component {
   }
 
   render() {
-    return <Mapping model={this.model} />;
+    return <Mapping model={this.model} props={this.props} />;
   }
 }
 
 export default observer(MappingModelInit);
 
-const Mapping = observerLite(({ model }) => {
+const Mapping = observerLite(({ model, props }) => {
   const { editMappingProfile, editMappingTransformer } = model.store;
 
   const {
@@ -53,7 +53,7 @@ const Mapping = observerLite(({ model }) => {
         <Button
           type="primary"
           icon="plus"
-          onClick={() => editMappingProfileChange({ create: true })}
+          onClick={() => props.history.push('/new-mapping')}
         >
           Mapping Profile
         </Button>

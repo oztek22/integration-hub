@@ -33,7 +33,7 @@ const chartData = {
     size: '106*56',
     shape: 'flow-rect',
     color: '#eeedf2',
-    label: '<div>asad</div>',
+    label: 'source',
     x: 55,
     y: 55,
     id: 'src',
@@ -43,7 +43,7 @@ const chartData = {
     size: '106*56',
     shape: 'flow-rect',
     color: '#eeedf2',
-    label: '结束节点',
+    label: 'destination',
     x: 900,
     y: 300,
     id: 'dest',
@@ -114,9 +114,9 @@ class TransformationSetting extends React.Component {
         <div className="mapping-aggregator-tabs-container">
           <div className="tabs-title">
             <div className="title-img">
-              <img src={this.props.imgIcon} alt="aggregate" />
+              <img src={this.props.selectedNode.icon} alt="aggregate" />
             </div>
-            <div className="title-subtext">{this.props.label}</div>
+            <div className="title-subtext">{this.props.selectedNode.label}</div>
           </div>
           <div className="tabs-content">
             <div className="tabs-inner-content">
@@ -210,11 +210,34 @@ class NewMapping extends React.Component {
       isMore: false,
       mappingOptions: mappingOptions,
       selectedNode: null,
-      chartData: chartData
+      chartData: chartData,
+      sources: [],
+      destinations: []
     }
   }
   componentDidMount() {
     console.log(JSON.parse(JSON.stringify(this.props)));
+    this.getSources();
+    this.getDestinations();
+  }
+  getSources() {
+    this.setState({
+      sources: [
+        { key: 'source1', name: 'Source 1' },
+        { key: 'source2', name: 'Source 2' },
+        { key: 'source3', name: 'Source 3' }
+      ]
+    });
+  }
+  getDestinations() {
+    this.setState({
+      sources: [
+        { key: 'destination1', name: 'Destination 1' },
+        { key: 'destination2', name: 'Destination 2' },
+        { key: 'destination3', name: 'Destination 3' },
+        { key: 'destination4', name: 'Destination 4' }
+      ]
+    });
   }
   isMoreClicked() {
     this.setState({ isMore: !this.state.isMore, mappingOptions: this.state.isMore ? mappingOptions : mappingOptions.concat(mappingMoreOptions) });
@@ -366,7 +389,8 @@ class NewMapping extends React.Component {
                                         itemType: value.label,
                                         src_col: '',
                                         des_col: '',
-                                        transformation: ''
+                                        transformation: '',
+                                        icon: value.icon
                                       }}>
                                       <li className="chart-tabs-list-item">
                                         <div className="chart-inner-item-content">
