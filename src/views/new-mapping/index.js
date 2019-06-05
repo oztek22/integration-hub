@@ -293,7 +293,7 @@ class NewMapping extends React.Component {
           sequence: index - 1,
           src_col: node.src_col,
           des_col: node.des_col,
-          transformation: node.transformation
+          formula: node.transformation
         })
       }
     });
