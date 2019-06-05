@@ -274,4 +274,11 @@ export const AggregatorTabs = styled.div`
             font-weight: 500;  
         }
     }
+    
+  .mapping-input-parent-section {
+    display: flex;
+    .mapping-input-child-section {
+      flex: 0 1 50%;
+    }
+  }
 `;

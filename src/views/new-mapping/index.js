@@ -16,7 +16,7 @@ import Structure from '../../assets/images/structureparser.svg';
 import ZoomIn from '../../assets/images/zoom-in.svg';
 import ZoomOut from '../../assets/images/zoom-out.svg';
 import Delete from '../../assets/images/delete.svg';
-import GGEditor, { Flow, ItemPanel, Item, Command, Toolbar } from 'gg-editor';
+import GGEditor, { Flow, ItemPanel, Item, Command, Toolbar, withPropsAPI } from 'gg-editor';
 import {
   MappingWrapper,
   LargeContainer,
@@ -37,25 +37,22 @@ const chartData = {
     x: 55,
     y: 55,
     id: 'src',
-    index: 0,
+    itemType: 'src'
   }, {
     type: 'node',
     size: '106*56',
     shape: 'flow-rect',
     color: '#eeedf2',
     label: '结束节点',
-    x: 55,
-    y: 255,
+    x: 900,
+    y: 300,
     id: 'dest',
-    index: 2,
+    itemType: 'dest'
   }],
   edges: [{
     source: 'src',
-    sourceAnchor: 2,
     target: 'dest',
-    targetAnchor: 0,
-    id: '1',
-    index: 1,
+    id: 'src-dest'
   }],
 };
 
@@ -97,18 +94,196 @@ const mappingOptions = [
   }
 ]
 
+
+class TransformationSetting extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedTab: 'general'
+    }
+  }
+  componentDidMount() {
+    console.log(this.props);
+  }
+
+  render() {
+    return (
+
+      <AggregatorTabs>
+        <div className="mapping-label">Transformer Settings</div>
+        <div className="mapping-aggregator-tabs-container">
+          <div className="tabs-title">
+            <div className="title-img">
+              <img src={this.props.imgIcon} alt="aggregate" />
+            </div>
+            <div className="title-subtext">{this.props.label}</div>
+          </div>
+          <div className="tabs-content">
+            <div className="tabs-inner-content">
+              <div className="tabs-left-content">
+                <ul className="tabs-list">
+                  <li className="tabs-item">
+                    <div className={this.state.selectedTab === 'general' ? 'active tabs-inner-text' : 'tabs-inner-text'} onClick={() => { this.setState({ selectedTab: 'general' }) }}>
+                      General Settings
+                    </div>
+                  </li>
+                  <li className={this.state.selectedTab === 'fields' ? 'active tabs-inner-text' : 'tabs-inner-text'} onClick={() => { this.setState({ selectedTab: 'fields' }) }}>
+                    <div className="tabs-inner-text">SRC/DEST Fields</div>
+                  </li>
+                  <li className="tabs-item">
+                    <div className="tabs-inner-text">Group By</div>
+                  </li>
+                  <li className="tabs-item">
+                    <div className="tabs-inner-text">Aggregate</div>
+                  </li>
+                  <li className="tabs-item">
+                    <div className="tabs-inner-text">Advanced</div>
+                  </li>
+                </ul>
+              </div>
+              {this.state.selectedTab === 'general' ?
+                <div className="tabs-right-content">
+                  <div className="mapping-input-section">
+                    <div className="mapping-label">Name</div>
+                    <div className="mapping-input">
+                      <input
+                        type="text"
+                        placeholder="Changing the name format"
+                      />
+                    </div>
+                  </div>
+                  <div className="mapping-textarea-section">
+                    <div className="mapping-label">Description</div>
+                    <div className="mapping-textarea">
+                      <textarea placeholder="Enter the Description for this Transformer" />
+                    </div>
+                  </div>
+                </div>
+                :
+                <div className="tabs-right-content">
+                  <div className="mapping-input-parent-section">
+                    <div className="mapping-input-child-section">
+                      <div className="mapping-label">SOURCE COLUMN NAME</div>
+                      <div className="mapping-input">
+                        <input
+                          type="text"
+                          placeholder="Changing the name format"
+                          value={this.props.selectedNode.src}
+                          onChange={(e) => { this.props.selectedNode.src = e.target.value; this.props.updateSelectedNode(this.props.selectedNode) }}
+                        />
+                      </div>
+                    </div>
+                    <div className="mapping-input-child-section">
+                      <div className="mapping-label">DESTINATION COLUMN NAME</div>
+                      <div className="mapping-input">
+                        <input
+                          type="text"
+                          placeholder="Changing the name format"
+                          value={this.props.selectedNode.dest}
+                          onChange={(e) => { this.props.selectedNode.dest = e.target.value; this.props.updateSelectedNode(this.props.selectedNode) }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mapping-textarea-section">
+                    <div className="mapping-label">TRANSFORMATION</div>
+                    <div className="mapping-textarea">
+                      <textarea placeholder="Enter the Description for this Transformation"
+                        value={this.props.selectedNode.transformation}
+                        onChange={(e) => { this.props.selectedNode.transformation = e.target.value; this.props.updateSelectedNode(this.props.selectedNode) }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </AggregatorTabs>
+    )
+  }
+}
 class NewMapping extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isMore: false,
-      mappingOptions: mappingOptions
+      mappingOptions: mappingOptions,
+      selectedNode: null,
+      chartData: chartData
     }
+  }
+  componentDidMount() {
+    console.log(JSON.parse(JSON.stringify(this.props)));
   }
   isMoreClicked() {
     this.setState({ isMore: !this.state.isMore, mappingOptions: this.state.isMore ? mappingOptions : mappingOptions.concat(mappingMoreOptions) });
   }
+  canvasClicked(event) {
+    console.log('event', event);
+  }
+  onBeforeChartChange(event) {
+    console.log('onBeforeChartChange', event);
+    if (event.action === 'add' && event.model.type === 'node') {
+      const chartData = this.state.chartData;
+      this.setState({ chartData: null });
+      chartData.nodes.push(event.model);
+      chartData.edges.pop();
+      if (chartData.nodes.length === 3) {
+        chartData.edges.push({
+          source: chartData.nodes[0].id,
+          target: event.model.id,
+          id: chartData.nodes[0].id + '-' + event.model.id,
+        });
+        chartData.edges.push({
+          source: event.model.id,
+          target: chartData.nodes[1].id,
+          id: event.model.id + '-' + chartData.nodes[1].id,
+        });
+      } else {
+        chartData.edges.push({
+          source: chartData.nodes[chartData.nodes.length - 2].id,
+          target: event.model.id,
+          id: chartData.nodes[chartData.nodes.length - 2].id + '-' + event.model.id,
+        });
+        chartData.edges.push({
+          source: event.model.id,
+          target: chartData.nodes[1].id,
+          id: event.model.id + '-' + chartData.nodes[1].id,
+        });
+
+      }
+      this.setState({ chartData: JSON.parse(JSON.stringify(chartData)) }, () => {
+        console.log(this.state.chartData);
+      });
+    }
+  }
+  nodeClicked(event) {
+    console.log('node-clicked', event);
+    console.log(event.item.model);
+    console.log(chartData);
+    switch (event.item.model.itemType) {
+      case 'src':
+
+        break;
+      case 'dest':
+
+        break;
+      default:
+        this.setState({ selectedNode: event.item.model });
+        break;
+    }
+  }
+  itemDropped(command) {
+    console.log('command', command);
+  }
+  updateSelectedNode(node) {
+    this.setState({ selectedNode: node });
+  }
   render() {
+    if (!this.state.chartData) {
+      return (null);
+    }
     return (
       <MappingWrapper>
         <LargeContainer>
@@ -133,7 +308,7 @@ class NewMapping extends React.Component {
 
               <GGEditor
                 onAfterCommandExecute={({ command }) => {
-                  console.log('command', command);
+                  this.itemDropped(command);
                 }}>
                 <div className="mapping-charts-container">
                   <div className="mapping-chart-content">
@@ -152,6 +327,11 @@ class NewMapping extends React.Component {
                                       shape="flow-rect"
                                       model={{
                                         label: value.label,
+                                        color: "#eeedf2",
+                                        itemType: value.label,
+                                        src: '',
+                                        dest: '',
+                                        transformation: ''
                                       }}>
                                       <li className="chart-tabs-list-item">
                                         <div className="chart-inner-item-content">
@@ -210,7 +390,9 @@ class NewMapping extends React.Component {
                         </div>
                         <div className="chart-right-bottom">
 
-                          <Flow style={{ flex: 1, height: 395 }} data={chartData} />
+                          <Flow style={{ flex: 1, height: 395 }} data={this.state.chartData} onClick={(e) => {
+                            this.canvasClicked(e);
+                          }} onNodeClick={(e) => { this.nodeClicked(e) }} onBeforeChange={(e) => { this.onBeforeChartChange(e) }} />
 
                         </div>
                       </div>
@@ -219,59 +401,9 @@ class NewMapping extends React.Component {
                 </div>
               </GGEditor>
             </MappingChart>
-            <AggregatorTabs>
-              <div className="mapping-label">Transformer Settings</div>
-              <div className="mapping-aggregator-tabs-container">
-                <div className="tabs-title">
-                  <div className="title-img">
-                    <img src={AggregatorIcon} alt="aggregate" />
-                  </div>
-                  <div className="title-subtext">Aggregator Settings</div>
-                </div>
-                <div className="tabs-content">
-                  <div className="tabs-inner-content">
-                    <div className="tabs-left-content">
-                      <ul className="tabs-list">
-                        <li className="tabs-item">
-                          <div className="active tabs-inner-text">
-                            General Settings
-                        </div>
-                        </li>
-                        <li className="tabs-item">
-                          <div className="tabs-inner-text">Incoming Fields</div>
-                        </li>
-                        <li className="tabs-item">
-                          <div className="tabs-inner-text">Group By</div>
-                        </li>
-                        <li className="tabs-item">
-                          <div className="tabs-inner-text">Aggregate</div>
-                        </li>
-                        <li className="tabs-item">
-                          <div className="tabs-inner-text">Advanced</div>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="tabs-right-content">
-                      <div className="mapping-input-section">
-                        <div className="mapping-label">Name</div>
-                        <div className="mapping-input">
-                          <input
-                            type="text"
-                            placeholder="Changing the name format"
-                          />
-                        </div>
-                      </div>
-                      <div className="mapping-textarea-section">
-                        <div className="mapping-label">Description</div>
-                        <div className="mapping-textarea">
-                          <textarea placeholder="Enter the Description for this Transformer" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </AggregatorTabs>
+            {this.state.selectedNode ?
+              <TransformationSetting updateSelectedNode={(e) => { this.updateSelectedNode(e) }} selectedNode={this.state.selectedNode}></TransformationSetting>
+              : null}
           </InnerMapping>
         </LargeContainer>
       </MappingWrapper>
@@ -279,4 +411,4 @@ class NewMapping extends React.Component {
   }
 };
 
-export default withRouter(NewMapping);
+export default withPropsAPI(withRouter(NewMapping));
