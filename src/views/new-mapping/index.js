@@ -168,8 +168,8 @@ class TransformationSetting extends React.Component {
                         <input
                           type="text"
                           placeholder="Changing the name format"
-                          value={this.props.selectedNode.src}
-                          onChange={(e) => { this.props.selectedNode.src = e.target.value; this.props.updateSelectedNode(this.props.selectedNode) }}
+                          value={this.props.selectedNode.src_col}
+                          onChange={(e) => { this.props.selectedNode.src_col = e.target.value; this.props.updateSelectedNode(this.props.selectedNode) }}
                         />
                       </div>
                     </div>
@@ -179,8 +179,8 @@ class TransformationSetting extends React.Component {
                         <input
                           type="text"
                           placeholder="Changing the name format"
-                          value={this.props.selectedNode.dest}
-                          onChange={(e) => { this.props.selectedNode.dest = e.target.value; this.props.updateSelectedNode(this.props.selectedNode) }}
+                          value={this.props.selectedNode.des_col}
+                          onChange={(e) => { this.props.selectedNode.des_col = e.target.value; this.props.updateSelectedNode(this.props.selectedNode) }}
                         />
                       </div>
                     </div>
@@ -329,8 +329,8 @@ class NewMapping extends React.Component {
                                         label: value.label,
                                         color: "#eeedf2",
                                         itemType: value.label,
-                                        src: '',
-                                        dest: '',
+                                        src_col: '',
+                                        des_col: '',
                                         transformation: ''
                                       }}>
                                       <li className="chart-tabs-list-item">
