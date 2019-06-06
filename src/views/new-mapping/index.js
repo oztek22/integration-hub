@@ -248,6 +248,7 @@ class NewMapping extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      chartName: '',
       isMore: false,
       mappingOptions: mappingOptions,
       selectedNode: null,
@@ -355,7 +356,7 @@ class NewMapping extends React.Component {
     const rawData = {
       'func': 'write',
       'connObj': {
-        'name': 'map_3',
+        'name': this.state.chartName,
         'srcid': '1',
         'desid': '2',
         'mappings': mapping
@@ -390,7 +391,7 @@ class NewMapping extends React.Component {
             <div className="mapping-input-section">
               <div className="mapping-label">Name the Mapping Profile</div>
               <div className="mapping-input">
-                <input type="text" placeholder="Changing the name format" />
+                <input type="text" placeholder="Changing the name format" value={this.state.chartName} onChange={(e) => { this.setState({ chartName: e.target.value }) }} />
               </div>
             </div>
             <MappingChart>
