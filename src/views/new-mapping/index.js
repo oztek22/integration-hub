@@ -24,7 +24,7 @@ import {
   AggregatorTabs,
   MappingChart,
 } from './newMappingStyle';
-import { Button } from 'antd';
+import { Button, Select } from 'antd';
 const axios = require('axios');
 
 const chartData = {
@@ -37,7 +37,8 @@ const chartData = {
     x: 55,
     y: 55,
     id: 'src',
-    itemType: 'src'
+    itemType: 'src',
+    icon: DataMasking
   }, {
     type: 'node',
     size: '106*56',
@@ -47,7 +48,8 @@ const chartData = {
     x: 900,
     y: 300,
     id: 'dest',
-    itemType: 'dest'
+    itemType: 'dest',
+    icon: DataMasking
   }],
   edges: [{
     source: 'src',
@@ -102,8 +104,9 @@ class TransformationSetting extends React.Component {
       selectedTab: 'general'
     }
   }
-  componentDidMount() {
-    console.log(this.props);
+  getDerivedstatefromprops(nextProps, prevState) {
+    console.log(nextProps, nextProps.selectedNode.itemType);
+    this.setState(this.getUpdatedState(this.props));
   }
 
   render() {
@@ -116,85 +119,123 @@ class TransformationSetting extends React.Component {
             <div className="title-img">
               <img src={this.props.selectedNode.icon} alt="aggregate" />
             </div>
-            <div className="title-subtext">{this.props.selectedNode.label}</div>
+            <div className="title-subtext">{this.props.selectedNode.itemType}</div>
           </div>
           <div className="tabs-content">
             <div className="tabs-inner-content">
               <div className="tabs-left-content">
-                <ul className="tabs-list">
-                  <li className="tabs-item">
-                    <div className={this.state.selectedTab === 'general' ? 'active tabs-inner-text' : 'tabs-inner-text'} onClick={() => { this.setState({ selectedTab: 'general' }) }}>
-                      General Settings
+                {this.props.selectedNode.itemType === 'src' || this.props.selectedNode.itemType === 'dest' ?
+                  <ul className="tabs-list">
+                    <li className="tabs-item">
+                      <div className={this.state.selectedTab === 'src' ? 'active tabs-inner-text' : 'tabs-inner-text'} onClick={() => { this.setState({ selectedTab: 'general' }) }}>
+                        General Settings
+                </div>
+                    </li>
+                  </ul>
+                  :
+                  <ul className="tabs-list">
+                    <li className="tabs-item">
+                      <div className={this.state.selectedTab === 'general' ? 'active tabs-inner-text' : 'tabs-inner-text'} onClick={() => { this.setState({ selectedTab: 'general' }) }}>
+                        General Settings
                     </div>
-                  </li>
-                  <li className={this.state.selectedTab === 'fields' ? 'active tabs-inner-text' : 'tabs-inner-text'} onClick={() => { this.setState({ selectedTab: 'fields' }) }}>
-                    <div className="tabs-inner-text">SRC/DEST Fields</div>
-                  </li>
-                  <li className="tabs-item">
-                    <div className="tabs-inner-text">Group By</div>
-                  </li>
-                  <li className="tabs-item">
-                    <div className="tabs-inner-text">Aggregate</div>
-                  </li>
-                  <li className="tabs-item">
-                    <div className="tabs-inner-text">Advanced</div>
-                  </li>
-                </ul>
+                    </li>
+                    <li className={this.state.selectedTab === 'fields' ? 'active tabs-inner-text' : 'tabs-inner-text'} onClick={() => { this.setState({ selectedTab: 'fields' }) }}>
+                      <div className="tabs-inner-text">SRC/DEST Fields</div>
+                    </li>
+                    <li className="tabs-item">
+                      <div className="tabs-inner-text">Group By</div>
+                    </li>
+                    <li className="tabs-item">
+                      <div className="tabs-inner-text">Aggregate</div>
+                    </li>
+                    <li className="tabs-item">
+                      <div className="tabs-inner-text">Advanced</div>
+                    </li>
+                  </ul>
+                }
               </div>
-              {this.state.selectedTab === 'general' ?
+              {this.props.selectedNode.itemType === 'src' || this.props.selectedNode.itemType === 'dest' ?
                 <div className="tabs-right-content">
                   <div className="mapping-input-section">
                     <div className="mapping-label">Name</div>
                     <div className="mapping-input">
-                      <input
-                        type="text"
-                        placeholder="Changing the name format"
-                      />
-                    </div>
-                  </div>
-                  <div className="mapping-textarea-section">
-                    <div className="mapping-label">Description</div>
-                    <div className="mapping-textarea">
-                      <textarea placeholder="Enter the Description for this Transformer" />
+                      <Select
+                        defaultValue={this.props.selectedNode.label ? this.props.selectedNode.label : undefined}
+                        onChange={value => {
+                          this.props.selectedNode.label = value;
+                          console.log(this.props.selectedNode);
+                          this.props.updateSelectedNode(this.props.selectedNode);
+                        }
+                        }
+                        style={{ width: '100%' }}
+                        placeholder="Select Source"
+                      >
+                        {this.props.sources.map(source => (
+                          <Select.Option key={source.key} value={source.key}>
+                            {source.name}
+                          </Select.Option>
+                        ))}
+                      </Select>
                     </div>
                   </div>
                 </div>
                 :
-                <div className="tabs-right-content">
-                  <div className="mapping-input-parent-section">
-                    <div className="mapping-input-child-section">
-                      <div className="mapping-label">SOURCE COLUMN NAME</div>
+                this.state.selectedTab === 'general' ?
+                  <div className="tabs-right-content">
+                    <div className="mapping-input-section">
+                      <div className="mapping-label">Name</div>
                       <div className="mapping-input">
                         <input
                           type="text"
                           placeholder="Changing the name format"
-                          value={this.props.selectedNode.src_col}
-                          onChange={(e) => { this.props.selectedNode.src_col = e.target.value; this.props.updateSelectedNode(this.props.selectedNode) }}
                         />
                       </div>
                     </div>
-                    <div className="mapping-input-child-section">
-                      <div className="mapping-label">DESTINATION COLUMN NAME</div>
-                      <div className="mapping-input">
-                        <input
-                          type="text"
-                          placeholder="Changing the name format"
-                          value={this.props.selectedNode.des_col}
-                          onChange={(e) => { this.props.selectedNode.des_col = e.target.value; this.props.updateSelectedNode(this.props.selectedNode) }}
-                        />
+                    <div className="mapping-textarea-section">
+                      <div className="mapping-label">Description</div>
+                      <div className="mapping-textarea">
+                        <textarea placeholder="Enter the Description for this Transformer" />
                       </div>
                     </div>
                   </div>
-                  <div className="mapping-textarea-section">
-                    <div className="mapping-label">TRANSFORMATION</div>
-                    <div className="mapping-textarea">
-                      <textarea placeholder="Enter the Description for this Transformation"
-                        value={this.props.selectedNode.transformation}
-                        onChange={(e) => { this.props.selectedNode.transformation = e.target.value; this.props.updateSelectedNode(this.props.selectedNode) }}
-                      />
+                  :
+                  this.state.selectedTab === 'fields' ?
+                    <div className="tabs-right-content">
+                      <div className="mapping-input-parent-section">
+                        <div className="mapping-input-child-section">
+                          <div className="mapping-label">SOURCE COLUMN NAME</div>
+                          <div className="mapping-input">
+                            <input
+                              type="text"
+                              placeholder="Changing the name format"
+                              value={this.props.selectedNode.src_col}
+                              onChange={(e) => { this.props.selectedNode.src_col = e.target.value; this.props.updateSelectedNode(this.props.selectedNode) }}
+                            />
+                          </div>
+                        </div>
+                        <div className="mapping-input-child-section">
+                          <div className="mapping-label">DESTINATION COLUMN NAME</div>
+                          <div className="mapping-input">
+                            <input
+                              type="text"
+                              placeholder="Changing the name format"
+                              value={this.props.selectedNode.des_col}
+                              onChange={(e) => { this.props.selectedNode.des_col = e.target.value; this.props.updateSelectedNode(this.props.selectedNode) }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mapping-textarea-section">
+                        <div className="mapping-label">TRANSFORMATION</div>
+                        <div className="mapping-textarea">
+                          <textarea placeholder="Enter the Description for this Transformation"
+                            value={this.props.selectedNode.transformation}
+                            onChange={(e) => { this.props.selectedNode.transformation = e.target.value; this.props.updateSelectedNode(this.props.selectedNode) }}
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                    : null
               }
             </div>
           </div>
@@ -231,7 +272,7 @@ class NewMapping extends React.Component {
   }
   getDestinations() {
     this.setState({
-      sources: [
+      destinations: [
         { key: 'destination1', name: 'Destination 1' },
         { key: 'destination2', name: 'Destination 2' },
         { key: 'destination3', name: 'Destination 3' },
@@ -282,31 +323,22 @@ class NewMapping extends React.Component {
     }
   }
   nodeClicked(event) {
-    console.log('node-clicked', event);
-    console.log(event.item.model);
-    console.log(chartData);
-    switch (event.item.model.itemType) {
-      case 'src':
-
-        break;
-      case 'dest':
-
-        break;
-      default:
-        this.setState({ selectedNode: event.item.model });
-        break;
-    }
+    console.log('node-clicked', event.item.model);
+    this.setState({ selectedNode: event.item.model });
   }
   itemDropped(command) {
     console.log('command', command);
   }
   updateSelectedNode(node) {
     const chartData = this.state.chartData;
-    const previousNode = chartData.nodes.find((e) => e.id === node.id);
-    previousNode.src_col = node.src_col;
-    previousNode.des_col = node.des_col;
-    previousNode.transformation = node.transformation;
-    this.setState({ selectedNode: node, chartData: chartData });
+    this.setState({ chartData: null }, () => {
+      const previousNode = chartData.nodes.find((e) => e.id === node.id);
+      previousNode.src_col = node.src_col;
+      previousNode.des_col = node.des_col;
+      previousNode.transformation = node.transformation;
+      previousNode.label = node.label;
+      this.setState({ selectedNode: node, chartData: chartData });
+    });
   }
   saveMapping() {
     const mapping = [];
@@ -462,7 +494,10 @@ class NewMapping extends React.Component {
               </GGEditor>
             </MappingChart>
             {this.state.selectedNode ?
-              <TransformationSetting updateSelectedNode={(e) => { this.updateSelectedNode(e) }} selectedNode={this.state.selectedNode}></TransformationSetting>
+              <TransformationSetting updateSelectedNode={(e) => { this.updateSelectedNode(e) }}
+                selectedNode={this.state.selectedNode}
+                sources={this.state.selectedNode.itemType === 'src' ? this.state.sources : this.state.destinations}
+              ></TransformationSetting>
               : null}
           </InnerMapping>
         </LargeContainer>
