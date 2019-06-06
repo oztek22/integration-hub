@@ -332,14 +332,14 @@ class NewMapping extends React.Component {
   }
   updateSelectedNode(node) {
     const chartData = this.state.chartData;
-    this.setState({ chartData: null }, () => {
-      const previousNode = chartData.nodes.find((e) => e.id === node.id);
-      previousNode.src_col = node.src_col;
-      previousNode.des_col = node.des_col;
-      previousNode.transformation = node.transformation;
-      previousNode.label = node.label;
-      this.setState({ selectedNode: node, chartData: chartData });
-    });
+    // this.setState({ chartData: null }, () => {
+    const savedNode = chartData.nodes.find((e) => e.id === node.id);
+    savedNode.src_col = node.src_col;
+    savedNode.des_col = node.des_col;
+    savedNode.transformation = node.transformation;
+    savedNode.label = node.label;
+    this.setState({ chartData: chartData });
+    // });
   }
   saveMapping() {
     const mapping = [];
