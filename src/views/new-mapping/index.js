@@ -94,7 +94,38 @@ const mappingOptions = [
     label: 'Structure Parser',
     icon: Structure
   }
-]
+];
+
+const chartResponse = {
+  "statusCode": 200,
+  "result": {
+    "uid": null,
+    "name": "map_5",
+    "createdby": "jiya",
+    "mappings": [
+      {
+        "sequence": "1",
+        "src_col": "Recipient Name",
+        "des_col": "recipient_name",
+        "transformation": null
+      },
+      {
+        "sequence": "2",
+        "src_col": "Description",
+        "des_col": "description",
+        "transformation": null
+      },
+      {
+        "sequence": "3",
+        "src_col": "Award ID",
+        "des_col": "award_id",
+        "transformation": null
+      }
+    ],
+    "srcid": "1",
+    "desid": "2"
+  }
+};
 
 
 
@@ -106,20 +137,108 @@ class NewMapping extends React.Component {
       isMore: false,
       mappingOptions: mappingOptions,
       selectedNode: null,
-      chartData: chartData,
-      sources: [],
-      destinations: []
+      chartData: null,
+      sources: [
+        { key: '1', name: 'Source 1' },
+        { key: 'source2', name: 'Source 2' },
+        { key: 'source3', name: 'Source 3' }
+      ],
+      destinations: [
+        { key: 'destination1', name: 'Destination 1' },
+        { key: '2', name: 'Destination 2' },
+        { key: 'destination3', name: 'Destination 3' },
+        { key: 'destination4', name: 'Destination 4' }
+      ]
     }
   }
   componentDidMount() {
     console.log(JSON.parse(JSON.stringify(this.props)));
     this.getSources();
     this.getDestinations();
+    this.setChart(chartResponse);
   }
+
+  // wait for getting source and destination
+  setChart(response) {
+    const savedChart = JSON.parse(JSON.stringify(chartData));
+    savedChart.nodes[0].id = response.result.srcid;
+    savedChart.nodes[0].label = this.getDataLabel(this.state.sources, response.result.srcid);
+    savedChart.nodes[1].id = response.result.desid;
+    savedChart.nodes[1].label = this.getDataLabel(this.state.destinations, response.result.desid);
+    const xDiff = 800 / response.result.mappings.length;
+    const yDiff = xDiff / 4;
+    let currentX = 55;
+    let currentY = 55;
+    response.result.mappings.forEach((node, index) => {
+      currentX = currentX + xDiff;
+      currentY = currentY + yDiff;
+      savedChart.nodes.push({
+        type: 'node',
+        size: '106*56',
+        shape: 'flow-rect',
+        x: currentX,
+        y: currentY,
+        id: currentX,
+        label: mappingOptions[0].label + index,
+        color: "#eeedf2",
+        itemType: mappingOptions[0].label,
+        src_col: node.src_col,
+        des_col: node.des_col,
+        transformation: node.transformation,
+        sequence: node.sequence,
+        icon: mappingOptions[0].icon
+      });
+    });
+    savedChart.edges = this.setChartEdges(savedChart.nodes);
+    console.log(savedChart);
+    this.setState({
+      chartData: JSON.parse(JSON.stringify(savedChart))
+    });
+  }
+
+  setChartEdges(nodes) {
+    const edges = [];
+    nodes.forEach((node, index) => {
+      if (index === nodes.length - 1) {
+        const srcId = index === 1 ? nodes[0].id : node.id;
+        edges.push({
+          source: srcId,
+          target: nodes[1].id,
+          id: srcId + '-' + node.id
+        });
+      }
+      if (index === 2) {
+        edges.push({
+          source: nodes[0].id,
+          target: node.id,
+          id: nodes[0].id + '-' + node.id
+        });
+      } else if (index > 2) {
+        edges.push({
+          source: nodes[index - 1].id,
+          target: node.id,
+          id: nodes[index - 1].id + '-' + node.id
+        });
+      }
+    });
+    return edges;
+  }
+
+  getDataLabel(targets, id) {
+    const selectedTarget = targets.find((e) => {
+      return e.key === id;
+    });
+    if (!selectedTarget) {
+      return 'undefined';
+    }
+    return selectedTarget.name;
+  }
+
+
   getSources() {
     this.setState({
       sources: [
-        { key: 'source1', name: 'Source 1' },
+        { key: '1', name: 'Source 1' },
         { key: 'source2', name: 'Source 2' },
         { key: 'source3', name: 'Source 3' }
       ]
@@ -129,7 +248,7 @@ class NewMapping extends React.Component {
     this.setState({
       destinations: [
         { key: 'destination1', name: 'Destination 1' },
-        { key: 'destination2', name: 'Destination 2' },
+        { key: '2', name: 'Destination 2' },
         { key: 'destination3', name: 'Destination 3' },
         { key: 'destination4', name: 'Destination 4' }
       ]
@@ -201,7 +320,7 @@ class NewMapping extends React.Component {
     this.state.chartData.nodes.forEach((node, index) => {
       if (node.itemType !== 'src' && node.itemType !== 'dest') {
         mapping.push({
-          sequence: index - 1,
+          sequence: node.sequence ? node.sequence : index - 1,
           src_col: node.src_col,
           des_col: node.des_col,
           formula: node.transformation
