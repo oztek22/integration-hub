@@ -72,7 +72,7 @@ class TransformationSetting extends React.Component {
                                         <div className="mapping-label">Name</div>
                                         <div className="mapping-input">
                                             <Select
-                                                defaultValue={this.props.selectedNode.label ? this.props.selectedNode.label : undefined}
+                                                value={this.props.selectedNode.label ? this.props.selectedNode.label : undefined}
                                                 onChange={value => {
                                                     this.props.selectedNode.label = value;
                                                     console.log(this.props.selectedNode);
