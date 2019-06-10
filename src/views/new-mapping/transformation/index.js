@@ -9,7 +9,8 @@ class TransformationSetting extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTab: 'general'
+            selectedTab: 'general',
+            description: ''
         }
     }
     getDerivedStateFromProps(nextProps, prevState) {
@@ -105,7 +106,7 @@ class TransformationSetting extends React.Component {
                                         <div className="mapping-textarea-section">
                                             <div className="mapping-label">Description</div>
                                             <div className="mapping-textarea">
-                                                <textarea placeholder="Enter the Description for this Transformer" />
+                                                <textarea placeholder="Enter the Description for this Transformer" name="description" value={this.state.description} onChange={(e) => { this.setState({ description: e.target.value }) }} />
                                             </div>
                                         </div>
                                     </div>
@@ -140,7 +141,8 @@ class TransformationSetting extends React.Component {
                                                 <div className="mapping-label">TRANSFORMATION</div>
                                                 <div className="mapping-textarea">
                                                     <textarea placeholder="Enter the Description for this Transformation"
-                                                        value={this.props.selectedNode.transformation}
+                                                        name="transformation"
+                                                        value={this.props.selectedNode.transformation ? this.props.selectedNode.transformation : ''}
                                                         onChange={(e) => { this.props.selectedNode.transformation = e.target.value; this.updateSelectedNode(this.props.selectedNode) }}
                                                     />
                                                 </div>
